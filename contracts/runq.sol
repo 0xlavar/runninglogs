@@ -11,7 +11,7 @@ contract TestVaultFixed {
     function withdraw(uint256 amount) public {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         
-        // Fix: update balance BEFORE external call
+        // FIX: Update state BEFORE external call (prevents reentrancy)
         balances[msg.sender] -= amount;
         
         (bool sent,) = msg.sender.call{value: amount}("");
