@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract TestVault { 
+contract TestVaultFixed {
     mapping(address => uint256) public balances;
 
     function deposit() public payable {
@@ -10,8 +10,11 @@ contract TestVault {
 
     function withdraw(uint256 amount) public {
         require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        // Fix: update balance BEFORE external call
+        balances[msg.sender] -= amount;
+        
         (bool sent,) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send");
-        balances[msg.sender] -= amount;
     }
 }
